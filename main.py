@@ -232,7 +232,7 @@ def login_social(req: SocialLoginRequest):
         res = supabase.auth.sign_in_with_oauth({
             "provider": req.provider.lower(),
             "options": {
-                "redirect_to": "http://localhost:8000/docs" 
+                "redirect_to": "https://dress-rent-app.vercel.app/"
             }
         })
         return {

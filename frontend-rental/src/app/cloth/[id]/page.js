@@ -17,7 +17,7 @@ export default function ClothDetail({ params }) {
 
   const fetchSingleCloth = async () => {
     try {
-      const res = await fetch(`http://localhost:8000/api/cloth/${id}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cloth/${id}`);
       const data = await res.json();
       if (data.status === "success") {
           setCloth(data.data);
@@ -27,7 +27,7 @@ export default function ClothDetail({ params }) {
           if (data.data.image) {
             firstImg = data.data.image.startsWith("http") 
               ? data.data.image 
-              : `http://localhost:8000/${data.data.image}`;
+              : `${process.env.NEXT_PUBLIC_API_URL}/${data.data.image}`;
           }
           setMainImage(firstImg);
         }
@@ -79,7 +79,7 @@ const handleAddToCart = async () => {
 
     try {
       // 🛡️ วิ่งไปเช็คกับหลังบ้านก่อนว่าช่วงเวลานี้ชุดถูกจองไปหรือยัง
-      const res = await fetch(`http://localhost:8000/api/check-availability?cloth_id=${id}&start_date=${startDate}&end_date=${endDate}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/check-availability?cloth_id=${id}&start_date=${startDate}&end_date=${endDate}`);
       const result = await res.json();
 
       if (result.status === "booked") {
@@ -112,7 +112,7 @@ const handleAddToCart = async () => {
   cloth.image_4
 ]
 .filter(img => img)
-.map(img => img.startsWith("http") ? img : `http://localhost:8000/${img}`);
+.map(img => img.startsWith("http") ? img : `${process.env.NEXT_PUBLIC_API_URL}/${img}`);
 
   // 🌟 ค่าส่งตอนนี้ 50 บาทเท่ากันทั้งเชียงใหม่และต่างจังหวัด
     const shippingCost = 50;

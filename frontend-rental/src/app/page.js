@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from '../supabaseClient';
-
 // ==========================================
 // 1. คอมโพเนนต์ สำหรับการ์ดแต่ละใบ
 // ==========================================
@@ -12,7 +11,7 @@ function ClothCard({ cloth }) {
   const getImageUrl = (path) => {
     if (!path) return "https://via.placeholder.com/300x400?text=No+Image";
     if (path.startsWith("http")) return path; 
-    return `http://localhost:8000/${path}`;   
+    return `${process.env.NEXT_PUBLIC_API_URL}/${path}`; 
   };
 
   return (
@@ -70,7 +69,7 @@ export default function Home() {
     // 2. ดึงข้อมูลชุดเช่าจาก Backend Python
     const fetchClothes = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/cloths');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cloths`);
         const resData = await res.json();
         setCloths(resData.data || []);
       } catch (err) {

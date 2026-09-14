@@ -29,7 +29,7 @@ export default function AddClothPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/categories");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`);
       const result = await res.json();
       
       // 🌟 เพิ่มบรรทัดนี้เพื่อดูว่าเว็บได้รับข้อมูลอะไรมา
@@ -84,7 +84,7 @@ export default function AddClothPage() {
     });
 
     try {
-      const res = await fetch("http://localhost:8000/api/cloths", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cloths`, {
         method: "POST",
         body: formData,
       });

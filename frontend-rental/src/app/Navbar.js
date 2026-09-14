@@ -106,7 +106,7 @@ export default function Navbar() {
   const getImageUrl = (path) => {
     if (!path) return "https://via.placeholder.com/150?text=No+Image";
     if (path.startsWith("http")) return path; 
-    return `http://localhost:8000/${path}`;   
+    return `${process.env.NEXT_PUBLIC_API_URL}/${path}`;   
   };
   
   const handleFinalBooking = async (e) => {
@@ -136,7 +136,7 @@ export default function Navbar() {
       }
       formData.append("address", finalAddress);
 
-      const res = await fetch("http://localhost:8000/api/booking", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/booking`, {
         method: "POST",
         body: formData,
       });

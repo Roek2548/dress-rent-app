@@ -29,9 +29,9 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      const [resBookings, resCloths] = await Promise.all([
-        fetch("http://localhost:8000/api/bookings"),
-        fetch("http://localhost:8000/api/cloths")
+    const [resBookings, resCloths] = await Promise.all([
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings`),
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cloths`)
       ]);
       
       const resultBookings = await resBookings.json();
@@ -59,7 +59,7 @@ export default function AdminDashboard() {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      const res = await fetch(`http://localhost:8000/api/bookings/${id}/status`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
     if (!confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบออเดอร์รหัส #${id} ?\n(ข้อมูลที่ลบแล้วจะไม่สามารถกู้คืนได้)`)) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/bookings/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/bookings/${id}`, {
         method: "DELETE",
       });
       
@@ -144,7 +144,7 @@ export default function AdminDashboard() {
                     const getImageUrl = (path) => {
                       if (!path) return "https://via.placeholder.com/150?text=No+Image";
                       if (path.startsWith("http")) return path; 
-                      return `http://localhost:8000/${path}`;   
+                      return `${process.env.NEXT_PUBLIC_API_URL}/${path}`;
                     };
 
                     // 🌟 ดึงข้อมูลพิกัดและที่อยู่แบบคลีนๆ
@@ -199,10 +199,10 @@ export default function AdminDashboard() {
                         <td className="p-4 text-center">
                           {item.slip_url ? (
                             <img
-                              src={`http://localhost:8000/${item.slip_url}`}
-                              alt="slip"
-                              className="w-14 h-14 object-cover rounded-lg cursor-pointer border-2 border-gray-200 hover:border-blue-400 mx-auto transition hover:scale-110 shadow-sm"
-                              onClick={() => setPreviewImage(`http://localhost:8000/${item.slip_url}`)}
+                                src={item.slip_url?.startsWith("http") ? item.slip_url : `${process.env.NEXT_PUBLIC_API_URL}/${item.slip_url}`} 
+                                alt="slip"
+                                className="w-14 h-14 object-cover rounded-lg cursor-pointer border-2 border-gray-200 hover:border-blue-400 mx-auto transition hover:scale-110 shadow-sm"
+                                onClick={() => setPreviewImage(item.slip_url?.startsWith("http") ? item.slip_url : `${process.env.NEXT_PUBLIC_API_URL}/${item.slip_url}`)}
                             />
                           ) : (
                             <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">ไม่มีรูป</span>
