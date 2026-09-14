@@ -23,7 +23,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 app = FastAPI(title="Dress Rental API")
 
 # (โฟลเดอร์ uploads ไม่จำเป็นแล้วบน Server จริง แต่คงไว้เผื่อทดสอบ)
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+# app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # ==========================================
 # ตั้งค่า CORS
