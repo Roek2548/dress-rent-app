@@ -1,0 +1,14 @@
+=====================================================
+Run api
+python -m uvicorn main:app --reload
+http://localhost:8000/docs
+=====================================================
+Run web
+cd frontend-rental
+npm run dev 
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+npx create-next-app@latest frontend-rental
+http://localhost:3000
+=====================================================
+user@email.com / 1234
+admin@styleflow.com / 1234

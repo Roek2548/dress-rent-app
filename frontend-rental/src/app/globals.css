@@ -1,0 +1,46 @@
+@import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+
+@import "tailwindcss";
+
+/* 🌟 แก้ปัญหาสีตัวอักษรในกล่องค้นหาแผนที่ */
+.leaflet-control-geosearch input {
+  color: #1f2937 !important; /* บังคับให้ข้อความที่พิมพ์เป็นสีเทาเข้ม/ดำ */
+}
+
+.leaflet-control-geosearch .results {
+  color: #1f2937 !important;
+}
+
+.leaflet-control-geosearch .results > * {
+  color: #1f2937 !important; /* บังคับให้ชื่อสถานที่ที่ค้นหาเจอเป็นสีดำ */
+  background-color: #ffffff !important;
+}
+
+.leaflet-control-geosearch .results > *:hover {
+  background-color: #f3f4f6 !important; /* เปลี่ยนสีพื้นหลังนิดหน่อยตอนเอาเมาส์ชี้ */
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+
+:root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+}
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
