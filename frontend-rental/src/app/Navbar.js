@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "./CartContext";
 import { supabase } from '../supabaseClient';
 import Link from "next/link";
-import dynamic from "next/dynamic"; // 🌟 เพิ่ม import dynamic
+import dynamic from "next/dynamic"; 
 
 // 🌟 เรียกใช้ MapPicker แบบพิเศษ เพื่อไม่ให้หน้าจอขาวตอนโหลดแผนที่
 const MapPicker = dynamic(() => import('./MapPicker'), { 
@@ -14,6 +14,13 @@ const MapPicker = dynamic(() => import('./MapPicker'), {
 export default function Navbar() {
   const { cart, removeFromCart, clearCart } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+  
+  // 🌟 ป้องกัน Server-Side Rendering สำหรับคอมโพเนนต์แผนที่
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   // 🌟 ควบคุม Popup อัปโหลดสลิป
   const [isSlipModalOpen, setIsSlipModalOpen] = useState(false);
@@ -27,7 +34,7 @@ export default function Navbar() {
   // 🌟 State สำหรับจัดส่งและแผนที่
   const [shippingMethod, setShippingMethod] = useState("local"); 
   const [address, setAddress] = useState("");
-  const [shippingCost, setShippingCost] = useState(50); // เปลี่ยนเป็น State เพื่อให้บวกค่าส่งตามระยะทางได้
+  const [shippingCost, setShippingCost] = useState(50); 
   
   // 📍 เก็บพิกัดและระยะทางที่ลูกค้าปักหมุด
   const [pinLocation, setPinLocation] = useState(null);
@@ -66,21 +73,18 @@ export default function Navbar() {
       Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
       Math.sin(dLon/2) * Math.sin(dLon/2); 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    return (R * c).toFixed(2); // ส่งค่ากลับเป็นทศนิยม 2 ตำแหน่ง
+    return (R * c).toFixed(2); 
   };
 
   const handleLocationSelect = (latlng) => {
     setPinLocation(latlng);
     
-    // พิกัดร้านหลักของคุณ
     const shopLat = 18.876016;
     const shopLng = 99.010307;
     
-    // คำนวณระยะทาง
     const dist = calculateDistance(shopLat, shopLng, latlng.lat, latlng.lng);
     setDistance(dist);
     
-    // คำนวณค่าส่ง: 5 กม. แรก 50 บาท, ถ้าเกินบวกเพิ่ม กม.ละ 10 บาท
     let cost = 50;
     if (dist > 5) {
        cost += Math.ceil(dist - 5) * 10;
@@ -88,12 +92,10 @@ export default function Navbar() {
     setShippingCost(cost);
   };
 
-  // รีเซ็ตค่าส่งถ้าเปลี่ยนเป็นส่งต่างจังหวัด
   useEffect(() => {
     if (shippingMethod === "upcountry") {
       setShippingCost(50);
     } else if (shippingMethod === "local" && pinLocation) {
-       // คำนวณใหม่กรณีเปลี่ยนไปมา
        let cost = 50;
        if (distance > 5) cost += Math.ceil(distance - 5) * 10;
        setShippingCost(cost);
@@ -101,7 +103,7 @@ export default function Navbar() {
   }, [shippingMethod, distance, pinLocation]);
 
   const totalPrice = cart.reduce((sum, item) => sum + (item.rent_price || 0), 0);
-  const finalTotalPrice = totalPrice + shippingCost; // 🌟 รวมค่าเช่า + ค่าจัดส่งแบบใหม่
+  const finalTotalPrice = totalPrice + shippingCost; 
 
   const getImageUrl = (path) => {
     if (!path) return "https://via.placeholder.com/150?text=No+Image";
@@ -129,7 +131,6 @@ export default function Navbar() {
       formData.append("shipping_method", shippingMethod);
       formData.append("shipping_cost", shippingCost);
 
-      // 🌟 แนบพิกัดและระยะทางต่อท้ายที่อยู่ไปให้หลังบ้าน
       let finalAddress = address;
       if (shippingMethod === "local" && pinLocation) {
          finalAddress += `\n[พิกัดจัดส่ง: ${pinLocation.lat.toFixed(6)}, ${pinLocation.lng.toFixed(6)} | ระยะทาง: ${distance} กม.]`;
@@ -163,7 +164,6 @@ export default function Navbar() {
     }
   };
 
-  // ตรวจสอบความพร้อมก่อนให้กดปุ่มยืนยัน
   const isReadyToSubmit = customerName && slipFile && address && (shippingMethod === 'upcountry' || (shippingMethod === 'local' && pinLocation));
 
   return (
@@ -327,8 +327,8 @@ export default function Navbar() {
                   </label>
                 </div>
 
-                {/* 🌟 แสดงแผนที่เมื่อเลือกจัดส่งในเชียงใหม่ */}
-                {shippingMethod === "local" && (
+                {/* 🌟 แสดงแผนที่เฉพาะเมื่อเลือกจัดส่งในเชียงใหม่และโหลดบนเบราว์เซอร์แล้ว */}
+                {shippingMethod === "local" && isMounted && (
                   <div className="mt-4 p-3 bg-white rounded-lg border border-blue-200 shadow-sm">
                      <label className="block text-sm font-bold text-blue-800 mb-2">
                        📍 ปักหมุดที่อยู่จัดส่งของคุณ
@@ -337,9 +337,9 @@ export default function Navbar() {
                      
                      {pinLocation ? (
                         <div className="mt-3 text-sm text-green-700 bg-green-50 p-3 rounded-lg border border-green-100">
-                           ✅ ปักหมุดเรียบร้อย!<br/> 
-                           ระยะทางจากร้าน: <b>{distance} กิโลเมตร</b><br/>
-                           <span className="text-red-500 font-bold mt-1 block">ค่าจัดส่ง: {shippingCost} บาท</span>
+                            ✅ ปักหมุดเรียบร้อย!<br/> 
+                            ระยะทางจากร้าน: <b>{distance} กิโลเมตร</b><br/>
+                            <span className="text-red-500 font-bold mt-1 block">ค่าจัดส่ง: {shippingCost} บาท</span>
                         </div>
                      ) : (
                         <p className="mt-2 text-xs text-red-500 font-semibold">* กรุณาคลิกเลือกตำแหน่งบนแผนที่</p>
