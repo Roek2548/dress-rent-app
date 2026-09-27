@@ -21,6 +21,7 @@ function ClothCard({ cloth, isAdmin, onDelete }) {
   };
 
   return (
+
     <div className="relative bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow">
       {/* ปุ่มลบสำหรับ Admin */}
       {isAdmin && (
@@ -236,6 +237,15 @@ export default function Home() {
           Content
       ========================= */}
       <section className="max-w-7xl mx-auto px-6 py-10">
+          {/* ปุ่มกลับหน้าจัดการหลังบ้าน - แสดงเฉพาะ Admin */}
+            {isAdmin && (
+              <Link
+            href="/admin"
+              className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              >
+            ⬅️ กลับหน้าจัดการหลังบ้าน
+              </Link>
+            )}
         {user ? (
           <>
 
