@@ -449,7 +449,7 @@ def delete_cloth(cloth_id: int):
     try:
         # สั่งลบข้อมูลจากตาราง cloths โดยเทียบรหัสชุด
         # ⚠️ หมายเหตุ: ถ้าคอลัมน์รหัสในตารางฐานข้อมูลของคุณชื่อ cloth_id ให้เปลี่ยน .eq("id", ...) เป็น .eq("cloth_id", ...)
-        res = supabase.table("cloths").delete().eq("cloth_id", cloth_id).execute()
+        res = supabase.table("cloth").delete().eq("cloth_id", cloth_id).execute()
         
         return {"status": "success", "message": "ลบชุดเรียบร้อยแล้ว", "data": res.data}
     except Exception as e:

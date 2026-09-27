@@ -163,41 +163,58 @@ export default function Home() {
   // Delete Cloth
   // =========================
   const handleDeleteCloth = async (clothId, clothName) => {
-    console.log("กำลังจะลบชุด ID:", clothId);
-    const confirmed = window.confirm(
-      `⚠️ ต้องการลบชุด "${clothName}" หรือไม่?`
-    );
+  const confirmed = window.confirm(
+    `⚠️ ต้องการลบชุด "${clothName}" หรือไม่?`
+  );
 
-    if (!confirmed) {
-      return;
-    }
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    const res = await fetch(`${apiUrl}/api/cloths/${clothId}`, {
+      method: "DELETE",
+    });
+
+    // พยายามอ่านข้อมูลที่ Backend ส่งกลับมา
+    let responseData = {};
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-      const res = await fetch(`${apiUrl}/api/cloths/${clothId}`, {
-        method: "DELETE",
-      });
-
-      if (res.ok) {
-        alert("🗑️ ลบชุดเรียบร้อย");
-
-        // ลบออกจากหน้าจอทันที
-        setCloths((prev) =>
-          prev.filter((c) => (c.id || c.cloth_id) !== clothId)
-        );
-      } else {
-        const errorData = await res.json().catch(() => null);
-
-        console.error("Delete error:", errorData);
-
-        alert("❌ ลบชุดไม่สำเร็จ");
-      }
-    } catch (error) {
-      console.error("Delete error:", error);
-      alert("❌ เกิดข้อผิดพลาดในการเชื่อมต่อ");
+      responseData = await res.json();
+    } catch (jsonError) {
+      console.warn("Backend ไม่ได้ส่ง JSON กลับมา");
     }
-  };
+
+    // เช็คว่าสำเร็จ
+    if (res.ok && responseData.status !== "error") {
+      alert("🗑️ ลบชุดเรียบร้อย");
+
+      // ลบชุดออกจากหน้าจอทันที
+      setCloths((prev) =>
+        prev.filter((c) => (c.id || c.cloth_id) !== clothId)
+      );
+    } else {
+      // แสดงรายละเอียด Error จาก Backend
+      console.error("Backend Error:", responseData);
+
+      const errorMessage =
+        responseData.detail ||
+        responseData.message ||
+        responseData.error ||
+        "ถูกปฏิเสธจากฐานข้อมูล";
+
+      alert(`❌ ลบไม่สำเร็จ\n\nสาเหตุ: ${errorMessage}`);
+    }
+  } catch (error) {
+    console.error("Delete error:", error);
+
+    alert(
+      "❌ เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์"
+    );
+  }
+};
 
   // =========================
   // Loading
