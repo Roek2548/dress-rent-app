@@ -436,11 +436,21 @@ async def add_new_cloth(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @app.get("/api/categories")
 def get_categories():
     try:
         res = supabase.table("categories").select("*").execute() 
         return {"status": "success", "data": res.data}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
+
+@app.delete("/api/cloths/{cloth_id}")
+def delete_cloth(cloth_id: int):
+    try:
+        # สั่งลบข้อมูลจากตาราง cloths โดยเทียบรหัสชุด
+        # ⚠️ หมายเหตุ: ถ้าคอลัมน์รหัสในตารางฐานข้อมูลของคุณชื่อ cloth_id ให้เปลี่ยน .eq("id", ...) เป็น .eq("cloth_id", ...)
+        res = supabase.table("cloths").delete().eq("cloth_id", cloth_id).execute()
+        
+        return {"status": "success", "message": "ลบชุดเรียบร้อยแล้ว", "data": res.data}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
