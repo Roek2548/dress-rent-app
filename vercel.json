@@ -1,6 +1,0 @@
-{
-  "buildCommand": "frontend-rental && npm run build",
-  "outputDirectory": "frontend-rental/.next",
-  "installCommand": "frontend-rental && npm install",
-  "devCommand": "frontend-rental && npm run dev"
-}
